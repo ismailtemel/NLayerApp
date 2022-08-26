@@ -1,0 +1,12 @@
+D:\NLayerApp\NLayer.Core\bin\Debug\net6.0\NLayer.Core.deps.json
+D:\NLayerApp\NLayer.Core\bin\Debug\net6.0\NLayer.Core.dll
+D:\NLayerApp\NLayer.Core\bin\Debug\net6.0\NLayer.Core.pdb
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\NLayer.Core.csproj.AssemblyReference.cache
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\NLayer.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\NLayer.Core.AssemblyInfoInputs.cache
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\NLayer.Core.AssemblyInfo.cs
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\NLayer.Core.csproj.CoreCompileInputs.cache
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\NLayer.Core.dll
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\refint\NLayer.Core.dll
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\NLayer.Core.pdb
+D:\NLayerApp\NLayer.Core\obj\Debug\net6.0\ref\NLayer.Core.dll
