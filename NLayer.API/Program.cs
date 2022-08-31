@@ -5,6 +5,8 @@ using NLayer.Core.UnitOfWorks;
 using NLayer.Repository;
 using NLayer.Repository.Repositories;
 using NLayer.Repository.UnitOfWorks;
+using NLayer.Service.Mapping;
+using NLayer.Service.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +21,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Aþaðýdaki 1.IGenericRepository birden fazla dinamik alsaydý eðer birden fazla tipi generic alsaydý 2 tane alsaydý 1 virgül, 2 tane alsaydý 3 virgül koyardýk.
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-//builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
+builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
+// Parantez içine bizim mapleme kütüphanemiz neredeyse onu vermemiz gerekiyor.
+// MapProfile dan birden fazla olabilir hepsini ayný yere gömmemize gerek yoktur profile sýnýfdan miras almýþ tüm mapprofile classlarýný automapper kendi iç yapýsýna ekler bu yüzden istersek birden fazla oluþturabiliriz.
+// Eðer bir entityle ilgili çok faznal dönüþtürme varsa ona göre mapprofile leri ayýrýrýz. 
+builder.Services.AddAutoMapper(typeof(MapProfile));
 
 builder.Services.AddDbContext<AppDbContext>(x =>
 {

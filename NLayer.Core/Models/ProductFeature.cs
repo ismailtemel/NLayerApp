@@ -1,4 +1,4 @@
-﻿namespace NLayer.Core
+﻿namespace NLayer.Core.Models
 {
     public class ProductFeature
     {
@@ -9,6 +9,6 @@
         public int Width { get; set; }
         //ProductFeature da bir producta ait olacağı için ProductId de tutmamız gerekir.
         public int ProductId { get; set; }
-        public Product Product { get; set; }    
+        public Product Product { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace NLayer.Core.Repositories
 
         // Aşağıda geriye direk IEnumarable dönmememizin sebebi datayı aldıktan sonra ToList döndüğümüz anda veritabanına sorguyu atar IQueryable da dönen şeylerde direk veritabanına sorgu atılmaz bunlar memory de bizim yazmış olduğumuz lamda ifadelerini tek seferde veritabanına gönderir tabi ToList ve ToListAsync gibi methodlar çağırıldıktan sonra.
         // productRepository.GetAll(x=>x.id>5).Tolist(); 
-        IQueryable<T> GetAll(Expression<Func<T, bool>> expression);
+        IQueryable<T> GetAll();
 
         // Burada bir expression tanımlayacağız amacımız 
         // productRepository.where(x=>x.id>5).OrderBy.TolistAsync();

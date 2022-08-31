@@ -30,6 +30,7 @@ namespace NLayer.Repository.Repositories
 
         public async Task AddRangeAsync(IEnumerable<T> entities)
         {
+            // AddRange'in geriye birşey dönemsine gerek yok efcore şuan bunları memory'e kaydetti
             await _dbSet.AddRangeAsync(entities);
         }
 
@@ -38,7 +39,7 @@ namespace NLayer.Repository.Repositories
             return await _dbSet.AnyAsync(expression);
         }
 
-        public IQueryable<T> GetAll(Expression<Func<T, bool>> expression)
+        public IQueryable<T> GetAll()
         {
             // Burda AsNoTracking dememizin sebebi efcore çekmiş olduğu dataları memory'e almasın Tracking etmesin ki daha performanslı çalışsın.Eğer kullanmassak 1000 tane data çekersek bu 1000 tane datayı memory'e alır ve anlık olarak durumlarını track eder izler.Bu da uygulamamnın performansını düşürür.
             return _dbSet.AsNoTracking().AsQueryable();
