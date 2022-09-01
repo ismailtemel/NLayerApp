@@ -8,22 +8,38 @@ using NLayer.Core.Services;
 namespace NLayer.API.Controllers
 {
     // Aşağıda controller seviyesine kadar gelmiş action ifadesini kullanmamış eğer ki action olsaydı aşağıda yazdığımız methodların ismini endpointlere istek yaparken mutlaka yazmamız gerekirdi.Ama action olmadığından dolayı bizim frameworkümüz istek yaparken methodun tipine göre eşleyecek eğer bir get isteği yaparsak aşağıda çalıştırmak istediğimiz methdolardan biri gelir. Ama nasıl bir get isteği yaparsak örneği ilk methodun üsütnde yazıyor.
-    [Route("api/[controller]")]
-    [ApiController]
     public class ProductsController : CustomBaseController
     {
-        private readonly IMapper _mapper;
         // Controllerlar sadece servisleri bilir. Constructorlarında kesinlikle repoyu referans almazlar.
-        private readonly IService<Product> _service;
-        public ProductsController(IMapper mapper, IService<Product> service)
+        // Artık aşağıdaki  service'e ihtiyacımız kalmadı. IProductService üzerinden IServicedeki herşeye erişebiliriz.
+        // Çünkü IProductService interface'i IService interfacesinden miras alır.
+
+        private readonly IMapper _mapper;
+        
+        private readonly IProductService _service;
+        public ProductsController(IMapper mapper, IProductService productService)
         {
             _mapper = mapper;
-            _service = service;
+            _service = productService;
         }
-        ///GET api/products
+
+        //Method isimleri önemli değildir methodun tipine göre eşleşme vardır.
+        //GET api/products/GetProductsWithCategory
+        //Her seferinde aşağıdaki gibi isim belirtmek zorunda değiliz.Direk action yazarak da kullanabiliriz.
+        //İlerde methodun ismini değiştirirsek getin yanına action kodyuğumuz için bir sıkıntı yaşamayız.
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetProductsWithCategory()
+        {
+            // Amacımız controllerlar içerisinde action methodlarda minimum kod barındırmak.Tek satır kodla beraber create action result'ın istemiş olduğu datayı döndük.
+            return CreateActionResult(await _service.GetProductListWithCategory());
+        }
+
+        //GET api/products
         [HttpGet]
         public async Task<IActionResult> All()
         {
+            // Burda iki satır fazlamız var.Çünkü bunlar generic olduğu için dtoyu dönüştürmüyor.Dto yu bu scopelar içerisinde yapmak zorundayız.Artık özelleştirilmiş bir repo ve özelleştirilmiş bir servisimiz olduğu için artık direk olarak api'nin istemiş olduğu datayı dönüyoruz ve tek satıra indirmiş olduk.
+            // Aşağıda bulunan 2 satırdaki işlemi servis katmamnında yaparız yani gerçekten olması gereken yerde yaparız.
             var products = await _service.GetAllAsync();
             var productsDtos = _mapper.Map<List<ProductDto>>(products.ToList());
             //return Ok(CustomResponseDto<List<ProductDto>>.Success(200, productsDtos));

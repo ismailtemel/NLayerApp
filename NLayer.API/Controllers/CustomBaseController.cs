@@ -4,9 +4,8 @@ using NLayer.Core.DTOs;
 
 namespace NLayer.API.Controllers
 {
-    // Aşağıdaki routelar miras verdiğimiz sınıfta da olduğu için burada gerek kalmaz. Bundan dolayı sileriz.
-    //[Route("api/[controller]")]
-    //[ApiController]
+    [Route("api/[controller]")]
+    [ApiController]
     public class CustomBaseController : ControllerBase
     {
         // Aşağıdaki kod bir endpoint değildir.Bunu belirtmek için NoAction attribute'ünü ekleriz.Bunu eklemessek swagger bunu bir endpoint gibi algılar ve endpoint olarak algıladığında get veya post'u olmadığı için hata fırlatır.NonAction,bu bir endpoint değil kendi içimde kullanıyorum demektir.
