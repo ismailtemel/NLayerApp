@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NLayer.API.Filter;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
 using NLayer.Core.Services;
@@ -8,6 +8,7 @@ using NLayer.Core.Services;
 namespace NLayer.API.Controllers
 {
     // Aşağıda controller seviyesine kadar gelmiş action ifadesini kullanmamış eğer ki action olsaydı aşağıda yazdığımız methodların ismini endpointlere istek yaparken mutlaka yazmamız gerekirdi.Ama action olmadığından dolayı bizim frameworkümüz istek yaparken methodun tipine göre eşleyecek eğer bir get isteği yaparsak aşağıda çalıştırmak istediğimiz methdolardan biri gelir. Ama nasıl bir get isteği yaparsak örneği ilk methodun üsütnde yazıyor.
+    
     public class ProductsController : CustomBaseController
     {
         // Controllerlar sadece servisleri bilir. Constructorlarında kesinlikle repoyu referans almazlar.
@@ -15,8 +16,8 @@ namespace NLayer.API.Controllers
         // Çünkü IProductService interface'i IService interfacesinden miras alır.
 
         private readonly IMapper _mapper;
-        
         private readonly IProductService _service;
+
         public ProductsController(IMapper mapper, IProductService productService)
         {
             _mapper = mapper;
@@ -64,6 +65,7 @@ namespace NLayer.API.Controllers
         [HttpPost()]
         public async Task<IActionResult> Save(ProductDto productDto)
         {
+            // Methodumuz validaton'a takılırsa scopeların içine yazdığımız kodları çalıştırmaz.
             var products = await _service.AddAsync(_mapper.Map<Product>(productDto));
             var productsDto = _mapper.Map<ProductDto>(products);
             return CreateActionResult(CustomResponseDto<ProductDto>.Success(201, productsDto));

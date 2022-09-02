@@ -1,5 +1,8 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NLayer.API.Filter;
+using NLayer.API.Middlewares;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
@@ -15,7 +18,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Configuration
 // Add services to the container.
 //AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<>); = Bu satýrýn anlamý ilk önce validatorlarýn nerde olduðunu açýk açýk belirtiriz.registerla baþlayan yerin anlamý bana bir class ver ben o class'ýn içermiþ olduðu assembly'i alayým diyor classýmýz da productdtovalidator'ý verebiliriz.
-builder.Services.AddControllers().AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
+// Aþaðýda addcontroller içinde yaptýðýmýz iþlem her controller'ýn içine ayrý ayrý validator attribute'ü eklemek istemediðimiz için yaptýðýmýz bir iþlemdir. Options ile gireriz ve global olarak yeni filterlar ekleriz. Artýk global olarak tüm filter'larýmýza aþaðýdaki filter uygulanýr.
+// Artýk bizim aþaðýdaki filter'ýmýz araya girecek ve daha fluent validaditon kendi response'sini dönemden önce bizim filter'ýmýz kendi istediðimiz response modeli döner.
+// Default olarak api tarafýnda validation default olarak aktif yani direk olarak bizim fluent validationýn dönmüþ olduðu model aktif ediliyor. Bizim fluent validation dönmüþ olduðu modeli pasif hale getirmemiz gerekiyor.Yani api'nin kendisinin default olarak dönmüþ olduðu modeli kapatmamýz gerekiyor.Diyeceyiz ki apiye sen model dönme ben model döneceðim deriz.Biz api'ye sen filter'ýný aktif hale getirme bizim bu iþ için kendi filter'ýmýz var dememiz lazým.
+
+builder.Services.AddControllers(options => options.Filters.Add(new ValidateFilterAttribute())).AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    // Burda biz api'nin kendi filtresini baskýlýyoruz.
+    // Aþaðýdakinin anlamý invalid filter'ý baskýlamak istiyormusun diyor ve bizde true'ya eþitliyerek baskýlýyoruz.
+    // Yani filter'ý naptýk kendi dönmüþ olduðu model filtresini naptýk baskýladýk yani apinin filtresine sen inaktif duruma geç çünkü bizim burda kendi filtremiz olduðundan dolayý.Ýlk dönen model yani apinin modeli filtreye göre döner.O filter'ý pasif hale getirdik.
+    // MVC de apideki gibi bir baskýlama yapmamýza gerek yoktur.Çünkü api tarafýnda default olarak bizim yazdýðýmýz filter aktiftir.MVC de böyle bir durum yoktur.MVC de filterla beraber sadece yukarýdaki kodu yazmamýz yeterli olur.
+    options.SuppressModelStateInvalidFilter = true;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -47,6 +63,9 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
+// Burdan itibaren app'le baþlayan ve use ifadesini kullananlarýn hepsi middleware'dir.
+// Yanlýz buraya yazarsak burayý kirletiriz.Amacýmýz propgram.cs dosyasýný olabildiðince temiz býrakmak.
+// Aþaðýdaki app'in tipi WebApplicaitondur. 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,8 +75,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Aþaðýdaki UseHttpRedirection , eðer http ile baþlayan bir url varsa bunu https' e yönelndirir.
 app.UseHttpsRedirection();
 
+// Oluþturduðumuz middleware bir hata olduðu için var olan middleware'lardan üstte olmasý önemli.
+// Clienttan kaynaklý bir hata olduðunda uygulamamnýn herhangi bir yerinde biz bir hata fýrlatacaðýz bu middleware yakalayacak ve geriye bizim belirlemiþ olduðumuz modeli dönecek.
+app.UserCustomException();
+
+// Aþaðýdaki authorization bir request geldiðinde token doðrulamasý burda gerçekleþtirilir.
 app.UseAuthorization();
 
 app.MapControllers();
