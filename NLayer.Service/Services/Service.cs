@@ -2,6 +2,7 @@
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
+using NLayer.Service.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,19 @@ namespace NLayer.Service.Services
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            // Başlangıçta service ve repo katmanları birbirine benzer görünüyor fakat ilerledikçe olayın şekli değişmeye başlıyor.İlk başta GetAllAsync de dönüş tipleri değişti. Şimdi if ile birlikte bir bussines kodu ekliyoruz bu aradki fark program büyüdükçe değişmeye devam edecek.Bazen servis katmanından bazı api'lere istek yapmamız gerekecek vs.
+            // Aşağıda return demek yerine var hasProduct yaparız nedeni burası bizim bussines kodları yazdığımız yer.
+            var hasProduct = await _repository.GetByIdAsync(id);
+
+            // Eğer bir hata yoksa aşağıdaki if bloğuna girmez.Direk aşağıdaki return ile yoluna devam eder.
+            if (hasProduct==null)
+            {
+                //ClientSideException bir mesaj alıyordu parantezlere dinamik olarak bu class T alıyordu.Biz product'mı geliyor stock mu geliyor hangi entitynin geldiğini bilmiyoruz.Bu yüzden mantıklı bir hata dönememiz lazım.
+                // Aşağıdaki gibi NotFound dönersek artık 404 durum kodunu alırız.
+                // Çalıştırdığımızda daha şık durmasını istiyorsak eğer aşağıdaki gibi parantez içinde gelen id'yi de yazdırabiliriz.Süslü parantezleri dinamik çalışması için koyarız.
+                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+            }
+            return hasProduct;
         }
 
         public async Task RemoveAsync(T entity)

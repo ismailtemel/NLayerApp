@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "2B6vJj1ufR777wgWOK5Q36OLImaOY8bZfuhliTeo0hRBiIdGZGxg4iFliva3YLU5NrhpCaAiPG+Ldpe/4GNofg==",
+  "dgSpecHash": "/bjpZqD4NdxnfDrKvq7BXtiG5NTsdff0rY76WckVSWeUKLnQkeFksuMPWgqPcmT0j/gpXgiP0fLE3IRaIUoFog==",
   "success": true,
   "projectFilePath": "D:\\NLayerApp\\NLayer.API\\NLayer.API.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ASUS\\.nuget\\packages\\autofac\\6.0.0\\autofac.6.0.0.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\autofac.extensions.dependencyinjection\\7.2.0\\autofac.extensions.dependencyinjection.7.2.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\automapper\\11.0.0\\automapper.11.0.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\fluentvalidation\\10.3.6\\fluentvalidation.10.3.6.nupkg.sha512",

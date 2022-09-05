@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NLayer.API.Filter;
+using NLayer.API.Filters;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
 using NLayer.Core.Services;
@@ -52,10 +53,24 @@ namespace NLayer.API.Controllers
         // www.mysite.com/api/products/5 böyle bir sonuç alırız.
         // Get /api/products/5 bunu dersek eğer aşağıdaki method çalışır.Methodun tipine göre ve paramtresine göre bir eşleşme var.
         // O zaman aşağıda getallasync çalışmaz 
+        // Burda attribute şekilnde filter tanımlayamayız bunun iki tane sebebi vardır. 1.NotFoundFilter bir attribute sınıfını miras almıyor.Ama validatefilter,action filter attribute'unun dibine gittiğimiz zaman attribute'u miras alıyor ve IAsyncActionFilter interface'ini implemente ediyor.NotFoundFilter ise sadece IAsyncActionFilter'ı implemente ediyor.Nedeni biz dinamik kullanmak istiyoruz ve constructorunda bir parametre geçiyoruz eğer biz bir attribute'a bir filter'a constructorun da parametre geçiyorsak direk kapalı parantezlerle kullanamayız bunu yerine servisfilter üzerinden kullanmamız gerekir.Örnek olarak
+        // [ServiceFilter(typeof(NotFoundFilter<Product>))] Burda dikkat edersek biz servicefilter attribute'una bizim filterımızı tip olarak veriyoruz bu yüzden bizim IAsyncActionFilter'ımın validatefilterdaki gibi attribute sınıfını miras almasına gerek yok
+        // Son olarak bir filtremiz constructorunda parametre alıyorsa mutlaka servicefilter üzerinden kullanmamız lazım ve servicefilter da belirtmiş olduğumuz tipi de program.cs tarafında servise eklememiz lazım.
+        // Kullandığımız bu filter'ın avantajı normalde getbyıd'deki bizim exceptionumuz getbyid'de oluyordu.Gelen request aşağıdaki methodun içerisine girmiş oluyordu.Filter da ise gelen request methodun içerisine girmeden çalışır.İkisinin de kullanım yeri vardır.Her zaman en best practices çalışır.
+        [ServiceFilter(typeof(NotFoundFilter<Product>))]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
+            // Burda db de olan bir datayı çekmek istediğimizde null gelmez fakat db de olmayan bir datayı çekmek istediğimizde null gelir fakat biz null gelmesini istemiyoruz bu yüzden ilk önce kötü yöntem olan controller içinde if bloklarını kullanırız aşağıdaki gibi. 
             var products = await _service.GetByIdAsync(id);
+
+            //if (products==null)
+            //{
+                // Bir data bulunamadığı zaman geriye genellikle 404 notfound döneriz.
+                // Burda ise null yerine gelmesini istediğimiz sonucu yazdık.Bu if bloklarını burda yazdık fakat buna her bloğun içinde ihtiyacımız olabilir.Bu da controller içinde ciddi bir kirliliğe sebep olur.
+            //    return CreateActionResult(CustomResponseDto<ProductDto>.Fail(400, "Bu id'ye sahip ürün bulunamadı"));
+            //}
+
             var productsDto = _mapper.Map<ProductDto>(products);
             //return Ok(CustomResponseDto<List<ProductDto>>.Success(200, productsDtos));
             // Artık Ok,badrequest gibi bildirimlerden kurtulduk.

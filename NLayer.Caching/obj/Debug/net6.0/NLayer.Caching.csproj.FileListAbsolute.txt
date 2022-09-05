@@ -10,3 +10,10 @@ D:\NLayerApp\NLayer.Caching\obj\Debug\net6.0\NLayer.Caching.dll
 D:\NLayerApp\NLayer.Caching\obj\Debug\net6.0\refint\NLayer.Caching.dll
 D:\NLayerApp\NLayer.Caching\obj\Debug\net6.0\NLayer.Caching.pdb
 D:\NLayerApp\NLayer.Caching\obj\Debug\net6.0\ref\NLayer.Caching.dll
+D:\NLayerApp\NLayer.Caching\bin\Debug\net6.0\NLayer.Core.dll
+D:\NLayerApp\NLayer.Caching\bin\Debug\net6.0\NLayer.Repository.dll
+D:\NLayerApp\NLayer.Caching\bin\Debug\net6.0\NLayer.Service.dll
+D:\NLayerApp\NLayer.Caching\bin\Debug\net6.0\NLayer.Service.pdb
+D:\NLayerApp\NLayer.Caching\bin\Debug\net6.0\NLayer.Core.pdb
+D:\NLayerApp\NLayer.Caching\bin\Debug\net6.0\NLayer.Repository.pdb
+D:\NLayerApp\NLayer.Caching\obj\Debug\net6.0\NLayer.Caching.csproj.CopyComplete

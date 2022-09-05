@@ -69,3 +69,5 @@ D:\NLayerApp\NLayer.API\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.Depende
 D:\NLayerApp\NLayer.API\bin\Debug\net6.0\FluentValidation.dll
 D:\NLayerApp\NLayer.API\bin\Debug\net6.0\FluentValidation.AspNetCore.dll
 D:\NLayerApp\NLayer.API\bin\Debug\net6.0\FluentValidation.DependencyInjectionExtensions.dll
+D:\NLayerApp\NLayer.API\bin\Debug\net6.0\Autofac.dll
+D:\NLayerApp\NLayer.API\bin\Debug\net6.0\Autofac.Extensions.DependencyInjection.dll

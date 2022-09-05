@@ -1,8 +1,12 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLayer.API.Filter;
+using NLayer.API.Filters;
 using NLayer.API.Middlewares;
+using NLayer.API.Modules;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
@@ -22,7 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Artýk bizim aþaðýdaki filter'ýmýz araya girecek ve daha fluent validaditon kendi response'sini dönemden önce bizim filter'ýmýz kendi istediðimiz response modeli döner.
 // Default olarak api tarafýnda validation default olarak aktif yani direk olarak bizim fluent validationýn dönmüþ olduðu model aktif ediliyor. Bizim fluent validation dönmüþ olduðu modeli pasif hale getirmemiz gerekiyor.Yani api'nin kendisinin default olarak dönmüþ olduðu modeli kapatmamýz gerekiyor.Diyeceyiz ki apiye sen model dönme ben model döneceðim deriz.Biz api'ye sen filter'ýný aktif hale getirme bizim bu iþ için kendi filter'ýmýz var dememiz lazým.
 
-builder.Services.AddControllers(options => options.Filters.Add(new ValidateFilterAttribute())).AddFluentValidation(x=>x.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
+builder.Services.AddControllers(options => options.Filters.Add(new ValidateFilterAttribute())).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -35,23 +39,31 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+// Generic olduðu için typeof ile içine gireriz.Generic olduðu için oklarý açtýk kapattýk.
+// Filterlarýn burda durmsýný istemesek eðer bu filterlar için bir filter modul yaparýz ve bu sefer filter modulleri ekleriz.Nasýl ekleyeceðimizi autofac'in internet sayfasýndan öðrenebiliriz.
+builder.Services.AddScoped(typeof(NotFoundFilter<>));
+
+
+//builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Aþaðýdaki 1.IGenericRepository birden fazla dinamik alsaydý eðer birden fazla tipi generic alsaydý 2 tane alsaydý 1 virgül, 2 tane alsaydý 3 virgül koyardýk.
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
+//builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+//builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
 // Parantez içine bizim mapleme kütüphanemiz neredeyse onu vermemiz gerekiyor.
 // MapProfile dan birden fazla olabilir hepsini ayný yere gömmemize gerek yoktur profile sýnýfdan miras almýþ tüm mapprofile classlarýný automapper kendi iç yapýsýna ekler bu yüzden istersek birden fazla oluþturabiliriz.
 // Eðer bir entityle ilgili çok faznal dönüþtürme varsa ona göre mapprofile leri ayýrýrýz. 
 builder.Services.AddAutoMapper(typeof(MapProfile));
-builder.Services.AddScoped<IProductRespository, ProductRepository>();
-builder.Services.AddScoped<IProductService, ProductService>();
+//builder.Services.AddScoped<IProductRespository, ProductRepository>();
+//builder.Services.AddScoped<IProductService, ProductService>();
 // 30 tane entity'miz varsa 30 tane entity'i de buraya tanýmlarsak program.cs dosyasýný kirletiriz.
 // Ýlerde Autofac kütüphanesiyle birlikte dinamik olarak bu servisleri tek bir satýr kodla servise eklemiþ olacaðýz.
 
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
+//builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+//builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
@@ -63,8 +75,15 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
+
+// Burada UseServiceProviderFactory methodumuza AutofacServiceProviderFactory'ýmýzý yani kütüphaneden gelen sýnýfýmýzý ekliyoruz.
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+//Yukarýdakinin ardýndan bir modül ekleyeceðiz.Bu modülümüz içerisinde dinamik olarak napacaðýmýzý ekleyeceðiz.
+// Aþaðýdaki gibi modul class'ýmýzý aktif edebiliriz. 
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModul()));
+
 // Burdan itibaren app'le baþlayan ve use ifadesini kullananlarýn hepsi middleware'dir.
-// Yanlýz buraya yazarsak burayý kirletiriz.Amacýmýz propgram.cs dosyasýný olabildiðince temiz býrakmak.
+// Yanlýz buraya yazarsak burayý kirletiriz.Amacýmýz program.cs dosyasýný olabildiðince temiz býrakmak.
 // Aþaðýdaki app'in tipi WebApplicaitondur. 
 var app = builder.Build();
 
@@ -80,7 +99,7 @@ app.UseHttpsRedirection();
 
 // Oluþturduðumuz middleware bir hata olduðu için var olan middleware'lardan üstte olmasý önemli.
 // Clienttan kaynaklý bir hata olduðunda uygulamamnýn herhangi bir yerinde biz bir hata fýrlatacaðýz bu middleware yakalayacak ve geriye bizim belirlemiþ olduðumuz modeli dönecek.
-app.UserCustomException();
+app.UseCustomException();
 
 // Aþaðýdaki authorization bir request geldiðinde token doðrulamasý burda gerçekleþtirilir.
 app.UseAuthorization();
