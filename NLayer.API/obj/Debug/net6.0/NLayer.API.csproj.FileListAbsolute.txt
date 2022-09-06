@@ -71,3 +71,5 @@ D:\NLayerApp\NLayer.API\bin\Debug\net6.0\FluentValidation.AspNetCore.dll
 D:\NLayerApp\NLayer.API\bin\Debug\net6.0\FluentValidation.DependencyInjectionExtensions.dll
 D:\NLayerApp\NLayer.API\bin\Debug\net6.0\Autofac.dll
 D:\NLayerApp\NLayer.API\bin\Debug\net6.0\Autofac.Extensions.DependencyInjection.dll
+D:\NLayerApp\NLayer.API\bin\Debug\net6.0\NLayer.Caching.dll
+D:\NLayerApp\NLayer.API\bin\Debug\net6.0\NLayer.Caching.pdb

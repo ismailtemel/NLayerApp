@@ -47,7 +47,11 @@ namespace NLayer.Caching
             {
                 // Aşağıda productkey'e data'yı set et dedik hangi datayı _repoistory üzerinden git getall ile beraber tüm datayı al ve tolist deriz.
                 // Eğer uygulama ilk ayağa kalktığında cach yoksa oluşturacak daha sonra zaten buraya girmeyecek çünkü artık cachde değer var yukardaki TryGetValue burdan true ya da false döner.Cache de varsa true döner.
-                _memoryCache.Set(CacheProductKey, _repository.GetAll().ToList());
+                // Burada getall yerine getproductswithcategory ile de cachleyebiliriz. 
+                // Programı çalıştırınca 500 hatası naldık nedeni aşağıdaki GetProductListWithCategory methodu async olarak geliyor fakat constructorun içine asenkron olarak gelemez bu yüzden sonuna result koyup senkrona çevirmemiz gerekiyor.Constructor içerisinde await kullanamayız.
+                _memoryCache.Set(CacheProductKey, _repository.GetProductListWithCategory().Result);
+                // Eğer aşağıdaki gibi bir kodlama yaparsak bu sefer de GetAll'ın bir anlamı kalmıyor.O zaman gelall da productla beraber bağlı olduğu kategoriler de dönüyor.O zaman product'a çok uygun olmuyor.
+                //_memoryCache.Set(CacheProductKey, _repository.GetProductListWithCategory());
             }
         }
 
@@ -72,15 +76,13 @@ namespace NLayer.Caching
 
         public async Task<bool> AnyAsync(Expression<Func<Product, bool>> expression)
         {
-            await _repository.AnyAsync(expression);
-            await _unitOfWork.CommitAsync();
-            await CacheAllProductsAsync();
-            return expression;
+            return await _repository.AnyAsync(expression); // Değiştirilecek.
         }
 
         public Task<IEnumerable<Product>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var product = _memoryCache.Get<IEnumerable<Product>>(CacheProductKey);
+            return Task.FromResult(product);
         }
 
         public Task<Product> GetByIdAsync(int id)
@@ -99,9 +101,20 @@ namespace NLayer.Caching
             return Task.FromResult(product);
         }
 
+        // Cachlemede bir methodu nadir kullanıyorsak direk repodan dönebiliriz.
         public Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductListWithCategory()
         {
-            throw new NotImplementedException();
+            // Önceden sadece productsı vardı şimdi productlarını da al dedik biz burda getall da cach'i döndük.Aşağıda ise yine aynı methodu aldık ama methodumuz dto ve customreponse istediği için dto'yu çevirip customresponse ile beraber döndük.Bu methodun içindeki kodlarda category productları çekerken kategorileri de gelecek ama getall da productları ile beraber categorleri getallasync ile beraber productcontroller'daki All methoduna gelecek ama mapleme de dtoya dönüştüğü zaman productdto da category olmadığı için categoryler gelmez.Bu sayede bizim cach full time cach çalışacak ama bazen çok nadir kullandığımız bir method vardır bunu cachden çekmesin normal repodan çeksin dersek aşağıda yorum satırına aldığım ilk kod ile beraber diğer kodları dönebiliriz.
+            // Eğer custom birşey döneceksek aşağıdaki gibi var products şeklinde bir değer oluştururuz.
+            //var products = await _repository.GetProductListWithCategory();
+            var products = _memoryCache.Get<IEnumerable<Product>>(CacheProductKey);
+            //Burda mapper ile ilgili dto'ya mapliyoruz ve yukaridaki products'ı veriyoruz.
+            var productsWithCategoryDto = _mapper.Map<List<ProductWithCategoryDto>>(products);
+
+            // Ardından return customresponsedto dedikten sonra list döneceğiz ve durum koduyla productwithcategorydto'yu verip kod satırımızısonlandırdık.
+            // Yukardaki GetProductListWithCategory isminin altının yeşil olmasının kod satırının içinde asenkronlukla ilgili bir kavram belitmemiş olmamız bunu da aşağıdaki gibi Task.FromResult ile çözeriz.Task.FromResult await yerine geçer.Await kullanılamayan yerlerde kullanılır.
+            // Geriye bir Task dönememiz durumunda methodun içerisinde await kullanmadığımız durumlarda faydalandığımız bir methoddur.
+            return Task.FromResult (CustomResponseDto<List<ProductWithCategoryDto>>.Success(200, productsWithCategoryDto));
         }
 
         public async Task RemoveAsync(Product entity)
