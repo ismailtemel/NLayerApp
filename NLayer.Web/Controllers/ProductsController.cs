@@ -14,7 +14,11 @@ namespace NLayer.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _services.GetProductListWithCategory());
+            // Bizim katmanlı mimari sadece bir web uygulaması dönecekse bir customresponse dönememize gerek yok.
+            // Burda customResponsedto bizim ihtiyacımızı görmüyor.Bizim productwithcategorydto ya ihtiyacımız var.
+            var customResponse = await _services.GetProductListWithCategory();
+            // Bizim asıl istediğimiz customresponse'ın datasıdır.
+            return View(customResponse.Data);
         }
     }
 }
