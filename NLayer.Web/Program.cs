@@ -1,7 +1,31 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using NLayer.Repository;
+using NLayer.Service.Mapping;
+using NLayer.Web.Modules;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddAutoMapper(typeof(MapProfile));
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+//Yukarýdakinin ardýndan bir modül ekleyeceðiz.Bu modülümüz içerisinde dinamik olarak napacaðýmýzý ekleyeceðiz.
+// Aþaðýdaki gibi modul class'ýmýzý aktif edebiliriz. 
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModul()));
+
+builder.Services.AddDbContext<AppDbContext>(x =>
+{
+    x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"), option =>
+    {
+        // Aþaðýdaki kodun anlamý AppDbContext'in NLayer.Repository içerisinde olduðunu belirtmek
+        // Aþaðýda sýnýfýn bulunmuþ olduðu Assemblyi alýyoruz ve ardýndan ismini alýyoruz.
+        option.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
+    });
+});
 
 var app = builder.Build();
 

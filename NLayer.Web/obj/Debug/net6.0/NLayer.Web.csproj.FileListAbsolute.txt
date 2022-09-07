@@ -269,3 +269,5 @@ D:\NLayerApp\NLayer.Web\bin\Debug\net6.0\NLayer.Core.pdb
 D:\NLayerApp\NLayer.Web\bin\Debug\net6.0\NLayer.Repository.pdb
 D:\NLayerApp\NLayer.Web\obj\Debug\net6.0\NLayer.Web.MvcApplicationPartsAssemblyInfo.cs
 D:\NLayerApp\NLayer.Web\obj\Debug\net6.0\NLayer.Web.csproj.CopyComplete
+D:\NLayerApp\NLayer.Web\bin\Debug\net6.0\Autofac.dll
+D:\NLayerApp\NLayer.Web\bin\Debug\net6.0\Autofac.Extensions.DependencyInjection.dll
