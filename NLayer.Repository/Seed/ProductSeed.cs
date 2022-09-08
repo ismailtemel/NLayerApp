@@ -11,12 +11,12 @@ namespace NLayer.Repository.Seed
             builder.HasData(new Product
             {
                 Id = 1,
-                CategoryId= 1,
-                Name="Kalem1",
-                Price=100,
-                Stock=20,
+                CategoryId = 1,
+                Name = "Kalem1",
+                Price = 100,
+                Stock = 20,
                 //Her product eklediğimizde createdDate'i vermek zorunda değiliz merkezi bir yerden çağırabiliriz.Bunu çağırmak için DbContext'e bir interceptor yazarız.Product veya herhangi bir entity kaydedilmeden önce CreatedDate'i set'leriz.
-                CreatedDate=DateTime.Now
+                CreatedDate = DateTime.Now
                 // BaseEntity'deki update veri tabanına ilk kayıt eklendiği esnada null olmalı.
                 // Update Date 'i de create date gibi merkezi bir yerden her hangi bir entity güncellenmeden önce updateed date'ini set edeceğiz bunu da bir dbcontext nesnemize yani bizim AppDbContext bir interceptor yazacağız araya girici bir method yazacağız aslında yapmak istediğimiz savechange methodunu ovveride etmek.
             },
@@ -28,7 +28,7 @@ namespace NLayer.Repository.Seed
                 Price = 200,
                 Stock = 30,
                 CreatedDate = DateTime.Now
-            }, 
+            },
             new Product
             {
                 Id = 3,
@@ -55,7 +55,7 @@ namespace NLayer.Repository.Seed
                 Price = 1300,
                 Stock = 240,
                 CreatedDate = DateTime.Now
-            }, 
+            },
             new Product
             {
                 Id = 6,

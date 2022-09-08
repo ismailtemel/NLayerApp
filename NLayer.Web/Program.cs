@@ -1,21 +1,27 @@
-using Autofac;
+ using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using NLayer.Repository;
 using NLayer.Service.Mapping;
+using NLayer.Service.Validation;
 using NLayer.Web.Modules;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddAutoMapper(typeof(MapProfile));
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 //Yukarýdakinin ardýndan bir modül ekleyeceðiz.Bu modülümüz içerisinde dinamik olarak napacaðýmýzý ekleyeceðiz.
 // Aþaðýdaki gibi modul class'ýmýzý aktif edebiliriz. 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModul()));
+
+builder.Services.AddControllersWithViews().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<ProductDtoValidator>());
+
+builder.Services.AddAutoMapper(typeof(MapProfile));
+
+
 
 builder.Services.AddDbContext<AppDbContext>(x =>
 {

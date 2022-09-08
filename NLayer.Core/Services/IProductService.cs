@@ -6,6 +6,6 @@ namespace NLayer.Core.Services
     public interface IProductService : IService<Product>
     {
         // Burda product dönemeyeceğiz. Özelleştirilmiş bir response döneceğiz yani product'la beraber kategoriyi de döneceğiz.
-        Task<List<ProductWithCategoryDto>> GetProductListWithCategory();
+        Task<List<ProductWithCategoryDto>> GetProductsWithCategory();
     }
 }

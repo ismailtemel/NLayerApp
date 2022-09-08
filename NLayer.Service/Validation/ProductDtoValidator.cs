@@ -16,7 +16,8 @@ namespace NLayer.Service.Validation
             // Aynı durum stock propertysi için de geçerlidir.O zaman notnull,notempty bir işe yaramaz bizim o zaman kesin bir aralık belirtmemiz gerekiyor. Örnek olarak price alanı örneğin boolean tipinin defaultu false'dur yani özellikle value tiplerinde default değerleri vardır ve bu default değerleri olduğu için de biz notull ile kontrol edemeyiz.Peki string de neden var ? String referans tipli olduğu için null olabilir.Ama double , datetime bunlar value type olduğu için default değerleri var bu yüzden biz notnull,notempty kullanmamız uygun olmaz.Bu yüzden aşağıda mutlaka inclusivebetween adında bir method kullanırız.Yani dahil edeceğimiz aralığı belirteceğimiz bir methoddur.
             RuleFor(x => x.Price).InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater 0");
             RuleFor(x => x.Stock).InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater 0");
-            RuleFor(x => x.CategoryId).InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater 0");
+            // Bizim burda categoryId için 0 dan büyük olma durumunu kontrol etmemize gerk yok çünkü dropdownlist'i dolduruyoruz. Bu yüzden aşağıdaki kod satırını kaldırabiliriz.
+            //RuleFor(x => x.CategoryId).InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater 0");
 
 
         }

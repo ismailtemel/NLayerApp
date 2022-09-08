@@ -18,7 +18,7 @@ namespace NLayer.Repository.Configurations
             builder.ToTable("Products");
 
             //HasOne ile bir products'ın bir kategorisi olabilir dedik. Withmany ile bir kategorinin de birden fazla products'ı olabilir dedik. HasForeignKey ile de foreign key belirledik.
-            builder.HasOne(x=>x.Category).WithMany(x=>x.Products).HasForeignKey(x=>x.CategoryId);
+            builder.HasOne(x => x.Category).WithMany(x => x.Products).HasForeignKey(x => x.CategoryId);
         }
     }
 }

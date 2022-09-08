@@ -7,12 +7,7 @@ using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
 using NLayer.Service.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NLayer.Caching
 {
@@ -30,10 +25,10 @@ namespace NLayer.Caching
         private readonly IMapper _mapper;
         // Birde in-memory cach için IMemoryCach'e ihtiyacımız var.
         private readonly IMemoryCache _memoryCache;
-        private readonly IProductRespository _repository;
+        private readonly IProductRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ProductServiceWithCaching(IUnitOfWork unitOfWork, IProductRespository repository, IMemoryCache memoryCache, IMapper mapper)
+        public ProductServiceWithCaching(IUnitOfWork unitOfWork, IProductRepository repository, IMemoryCache memoryCache, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _repository = repository;
@@ -49,7 +44,7 @@ namespace NLayer.Caching
                 // Eğer uygulama ilk ayağa kalktığında cach yoksa oluşturacak daha sonra zaten buraya girmeyecek çünkü artık cachde değer var yukardaki TryGetValue burdan true ya da false döner.Cache de varsa true döner.
                 // Burada getall yerine getproductswithcategory ile de cachleyebiliriz. 
                 // Programı çalıştırınca 500 hatası naldık nedeni aşağıdaki GetProductListWithCategory methodu async olarak geliyor fakat constructorun içine asenkron olarak gelemez bu yüzden sonuna result koyup senkrona çevirmemiz gerekiyor.Constructor içerisinde await kullanamayız.
-                _memoryCache.Set(CacheProductKey, _repository.GetProductListWithCategory().Result);
+                _memoryCache.Set(CacheProductKey, _repository.GetProductsWithCategory().Result);
                 // Eğer aşağıdaki gibi bir kodlama yaparsak bu sefer de GetAll'ın bir anlamı kalmıyor.O zaman gelall da productla beraber bağlı olduğu kategoriler de dönüyor.O zaman product'a çok uygun olmuyor.
                 //_memoryCache.Set(CacheProductKey, _repository.GetProductListWithCategory());
             }
@@ -74,7 +69,7 @@ namespace NLayer.Caching
             return entities;
         }
 
-       
+
 
         public Task<IEnumerable<Product>> GetAllAsync()
         {
@@ -99,7 +94,7 @@ namespace NLayer.Caching
         }
 
         // Cachlemede bir methodu nadir kullanıyorsak direk repodan dönebiliriz.
-        public Task<List<ProductWithCategoryDto>> GetProductListWithCategory()
+        public Task<List<ProductWithCategoryDto>> GetProductsWithCategory()
         {
             // Önceden sadece productsı vardı şimdi productlarını da al dedik biz burda getall da cach'i döndük.Aşağıda ise yine aynı methodu aldık ama methodumuz dto ve customreponse istediği için dto'yu çevirip customresponse ile beraber döndük.Bu methodun içindeki kodlarda category productları çekerken kategorileri de gelecek ama getall da productları ile beraber categorleri getallasync ile beraber productcontroller'daki All methoduna gelecek ama mapleme de dtoya dönüştüğü zaman productdto da category olmadığı için categoryler gelmez.Bu sayede bizim cach full time cach çalışacak ama bazen çok nadir kullandığımız bir method vardır bunu cachden çekmesin normal repodan çeksin dersek aşağıda yorum satırına aldığım ilk kod ile beraber diğer kodları dönebiliriz.
             // Eğer custom birşey döneceksek aşağıdaki gibi var products şeklinde bir değer oluştururuz.

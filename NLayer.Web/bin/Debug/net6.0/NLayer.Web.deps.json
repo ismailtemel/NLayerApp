@@ -9,6 +9,7 @@
       "NLayer.Web/1.0.0": {
         "dependencies": {
           "Autofac.Extensions.DependencyInjection": "7.2.0",
+          "FluentValidation.AspNetCore": "10.3.6",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "6.0.8",
           "NLayer.Service": "1.0.0"
         },

@@ -33,7 +33,7 @@ namespace NLayer.API.Controllers
         public async Task<IActionResult> GetProductsWithCategory()
         {
             // Amacımız controllerlar içerisinde action methodlarda minimum kod barındırmak.Tek satır kodla beraber create action result'ın istemiş olduğu datayı döndük.
-            return CreateActionResult(await _service.GetProductListWithCategory());
+            return CreateActionResult(await _service.GetProductWithCategory());
         }
 
         //GET api/products

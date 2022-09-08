@@ -3,12 +3,7 @@ using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
 using NLayer.Service.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NLayer.Service.Services
 {
@@ -66,7 +61,7 @@ namespace NLayer.Service.Services
             var hasProduct = await _repository.GetByIdAsync(id);
 
             // Eğer bir hata yoksa aşağıdaki if bloğuna girmez.Direk aşağıdaki return ile yoluna devam eder.
-            if (hasProduct==null)
+            if (hasProduct == null)
             {
                 //ClientSideException bir mesaj alıyordu parantezlere dinamik olarak bu class T alıyordu.Biz product'mı geliyor stock mu geliyor hangi entitynin geldiğini bilmiyoruz.Bu yüzden mantıklı bir hata dönememiz lazım.
                 // Aşağıdaki gibi NotFound dönersek artık 404 durum kodunu alırız.
