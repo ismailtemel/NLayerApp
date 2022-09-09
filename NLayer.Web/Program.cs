@@ -1,10 +1,11 @@
- using Autofac;
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using NLayer.Repository;
 using NLayer.Service.Mapping;
 using NLayer.Service.Validation;
+using NLayer.Web;
 using NLayer.Web.Modules;
 using System.Reflection;
 
@@ -33,12 +34,20 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
+
+builder.Services.AddScoped(typeof(NotFoundFilter<>));
+
+
+
 var app = builder.Build();
 
+// Burda bir UseExceptionHandler middlerware'i var fakat bu sadece development olmadýðý esnada çalýþýyor.Yani biz þimdi uygulamayý ayaða kaldýrdýðýmýzdaik olay development olayýdýr.O zaman UseExceptionHandler'ý dýþarýya almalýyýz ki bizi error sayfasýna yönlendirdiðini baþarýlý bir þekilde görelim.
+// Development esnasýnda error sayfasýna yönlenmesin bize hatayý deminki gibi direk göstersin çünkü biz daha geliþtirme aþamasýndayýz.Hatayý direk görmeliyiz.Canlýya çýktýðýmýzda environmentlerde aþaðýdaki hata sayfasýna gitsin.Biz görebilmek için if bloklarýnýn dýþýna çýkardýk.Normalde if bloklarý içinde olmasý daha uygun.
+app.UseExceptionHandler("/Home/Error");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

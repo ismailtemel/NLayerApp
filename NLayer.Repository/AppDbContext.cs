@@ -18,6 +18,73 @@ namespace NLayer.Repository
         // Burada productFeature product ile ilgili şimdi buraya productfeature'ı eklersek bağımsız olarak productfeature satırlarını db'ye ekleyebiliriz veya güncelleyebiliriz veya yazdığımız aşağıdaki dbset'i yorum satırına alabiliriz eğer bir yazılımcı productfeatureyi eklemek istiyorsa bunu product nesnesi üzerinden eklemeli
         public DbSet<ProductFeature> ProductFeatures { get; set; }
 
+        public override int SaveChanges()
+        {
+            // İki tane overload olduğu için bazen de savechangeyi çağırabileceğimiz için bu yüzden savechangeyi de almamız lazım.
+            foreach (var item in ChangeTracker.Entries())
+            {
+                // Entity den gelen eğer aşağıdaki is basenetity ise bizim tüm entitylerimiz baseentityden miras alıyordu arkasından bu bir referanstır diyoruz.
+                if (item.Entity is BaseEntity entityReference)
+                {
+                    // Burda bir yanlışlık yaptık item'ın entitylerinde değil item'ın statelerinde döneceğiz.
+                    switch (item.State)
+                    {
+                        // Eğer entity stateler den add ise eğer bir entity eklenme durumu var ise yukarıdaki entitynin referencesinin createddate'ini datetime olarak veriyoruz.
+                        case EntityState.Added:
+                            {
+                                entityReference.CreatedDate = DateTime.Now;
+                                break;
+                            }
+                        case EntityState.Modified:
+                            {
+                                Entry(entityReference).Property(x => x.CreatedDate).IsModified = false;
+                                entityReference.UpdatedDate = DateTime.Now;
+                                break;
+                            }
+                    }
+                }
+            }
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            // Buralar api için de geçerlidir.
+            // Burda veritabanına yansıtmadan önce veritabanına yansıtılacak olan entitylerin createddate ve updateddate'ini güncelledik.
+            // Efcore biz savechange'i çağırana kadar tüm entityleri memory'de track ediyordu.Biz savechange'yi çağırdığımız zaman veritabanına yansıtıyordu.Burda veritabanına yansıtmadan hemen önce aşağıda entitynin update'mi edildiğini yoksa yeni insert mü edildiğini anlayacağız ve ona göre de createddate'i ve updateddate'i değiştireceğiz.
+            // Foreach ile beraber track etmiş olan entitylerde dönelim.
+            foreach (var item in ChangeTracker.Entries())
+            {
+                // Entity den gelen eğer aşağıdaki is basenetity ise bizim tüm entitylerimiz baseentityden miras alıyordu arkasından bu bir referanstır diyoruz.
+                if (item.Entity is BaseEntity entityReference)
+                {
+                    // Burda bir yanlışlık yaptık item'ın entitylerinde değil item'ın statelerinde döneceğiz.
+                    switch (item.State)
+                    {
+                        // Eğer entity stateler den add ise eğer bir entity eklenme durumu var ise yukarıdaki entitynin referencesinin createddate'ini datetime olarak veriyoruz.
+                        case EntityState.Added:
+                            {
+                                entityReference.CreatedDate = DateTime.Now;
+                                break;
+                            }
+                        case EntityState.Modified:
+                            {
+                                // Burdaki createddate'i update yaparken db'ye yansıtmamamız lazım yani createddate'i değiştirmemesi lazım o zaman diyoruz ki burda 
+                                // Yukarıdaki entity referancenin propertylerine git ve createddate'inin ismodified'ını false yap diyoruz.Bu sayede biz update yaparken createddate'e dokunmadan geçeriz.Burda entity framework'e CreatedDate alanına dokunma diyoruz.CreatedDate alanı neyse db de aynı şekilde kalsın diyoruz.Modified'ını false set ettik.
+                                Entry(entityReference).Property(x=>x.CreatedDate).IsModified = false;
+                                entityReference.UpdatedDate = DateTime.Now;
+                                break;
+                            }
+                    }
+                }
+            }
+
+
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+
         //Entitylerimizle ilgili ayarları yapabilmek için model oluşurken çalışacak olan methodumuz aşağıdaki methoddur.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -75,16 +75,18 @@ namespace NLayer.Web.Controllers
 
         // Update yaparken bize bir id gelir hangi id'ye sahip bir products'ı update yapacağız diye.
         [HttpGet]
+        // Bu filter constructorunda bir parametre aldığı için servicefilter tanımlarız
+        [ServiceFilter(typeof(NotFoundFilter<Product>))]
         public async Task<IActionResult> Update(int id)
         {
             var product = await _services.GetByIdAsync(id);
             // Bunun arkasından bizim dropdown list'i yine doldurmamız lazım mesela kalemler seçiliyse kalemler gözükmesi lazım kitaplar seçiliyse kitaplar gözükmesi lazım.
             var categories = await _categoryService.GetAllAsync();
-            
+
             var categoriesDto = _mapper.Map<List<CategoryDto>>(categories.ToList());
-            
+
             // Aşağıda Name'in yanına bir parametre daha gelmesi lazım orda da bize seçilen değeri vermesini isteriz.Biz zaten id'sine ait products'ı bulduk. Bu id'ye sahip product'ın categoryId'sini veriyoruz.Artık kalemler kitaplar defterler derken gelen product defterlerle ilgili ise drop down listte defterlerle ilgili kayıtlar gözükecek ilk olarak.
-            ViewBag.categories = new SelectList(categoriesDto, "Id", "Name",product.CategoryId);
+            ViewBag.categories = new SelectList(categoriesDto, "Id", "Name", product.CategoryId);
 
             return View(_mapper.Map<ProductDto>(product));
         }

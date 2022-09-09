@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NLayer.Web.Models;
-using System.Diagnostics;
+using NLayer.Core.DTOs;
 
 namespace NLayer.Web.Controllers
 {
@@ -24,9 +23,10 @@ namespace NLayer.Web.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        // Biz herhangi bir controller içerisinde bir action method yazdığımızda hem kendi klasörüne mesela home klasörüne bakar bulamazsa shared'a bakar. Yani iki yere default olarak bakar.
+        public IActionResult Error(ErrorViewModel errorViewModel)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(errorViewModel);
         }
     }
 }
