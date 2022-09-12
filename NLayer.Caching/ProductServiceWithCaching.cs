@@ -94,7 +94,7 @@ namespace NLayer.Caching
         }
 
         // Cachlemede bir methodu nadir kullanıyorsak direk repodan dönebiliriz.
-        public Task<List<ProductWithCategoryDto>> GetProductsWithCategory()
+        public Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductsWithCategory()
         {
             // Önceden sadece productsı vardı şimdi productlarını da al dedik biz burda getall da cach'i döndük.Aşağıda ise yine aynı methodu aldık ama methodumuz dto ve customreponse istediği için dto'yu çevirip customresponse ile beraber döndük.Bu methodun içindeki kodlarda category productları çekerken kategorileri de gelecek ama getall da productları ile beraber categorleri getallasync ile beraber productcontroller'daki All methoduna gelecek ama mapleme de dtoya dönüştüğü zaman productdto da category olmadığı için categoryler gelmez.Bu sayede bizim cach full time cach çalışacak ama bazen çok nadir kullandığımız bir method vardır bunu cachden çekmesin normal repodan çeksin dersek aşağıda yorum satırına aldığım ilk kod ile beraber diğer kodları dönebiliriz.
             // Eğer custom birşey döneceksek aşağıdaki gibi var products şeklinde bir değer oluştururuz.
@@ -106,8 +106,8 @@ namespace NLayer.Caching
             // Ardından return customresponsedto dedikten sonra list döneceğiz ve durum koduyla productwithcategorydto'yu verip kod satırımızısonlandırdık.
             // Yukardaki GetProductListWithCategory isminin altının yeşil olmasının kod satırının içinde asenkronlukla ilgili bir kavram belitmemiş olmamız bunu da aşağıdaki gibi Task.FromResult ile çözeriz.Task.FromResult await yerine geçer.Await kullanılamayan yerlerde kullanılır.
             // Geriye bir Task dönememiz durumunda methodun içerisinde await kullanmadığımız durumlarda faydalandığımız bir methoddur.
-            //return Task.FromResult (CustomResponseDto<List<ProductWithCategoryDto>>.Success(200, productsWithCategoryDto));
-            return Task.FromResult(productsWithCategoryDto);
+            return Task.FromResult(CustomResponseDto<List<ProductWithCategoryDto>>.Success(200, productsWithCategoryDto));
+            //return Task.FromResult(productsWithCategoryDto);
         }
 
         public async Task RemoveAsync(Product entity)

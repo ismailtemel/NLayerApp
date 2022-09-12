@@ -7,6 +7,7 @@ using NLayer.Service.Mapping;
 using NLayer.Service.Validation;
 using NLayer.Web;
 using NLayer.Web.Modules;
+using NLayer.Web.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,21 @@ builder.Services.AddDbContext<AppDbContext>(x =>
         // Aþaðýda sýnýfýn bulunmuþ olduðu Assemblyi alýyoruz ve ardýndan ismini alýyoruz.
         option.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
     });
+});
+
+// Biz aþaðýdaki httpclient'ý productapiservice ve categoryapiservice için kullanýyorduk.Aþaðýda productapiservice'i kullanacaðýz. Arkasýndan options ile beraber base'ini vereceðiz.
+// Httpclient ile generic bir sýnýf verdiðimizde bu þu anlama gelir artýk gidip mvc sýnýfý içerisindeki service içindeki classlarýn constructoruna yazýp direk olarak kullanabiliriz.
+builder.Services.AddHttpClient<ProductApiService>(opt =>
+{
+    // Burda options üzerinden baseurl bu deðeri builder üzerinden configuration diyoruz ve baseurl'i okuyoruz.
+    opt.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
+});
+
+// Yukarýdaki iþlemin aynsýný categoryapiservice için de yaptýk.
+builder.Services.AddHttpClient<CategoryApiService>(opt =>
+{
+    // Burda options üzerinden baseurl bu deðeri builder üzerinden configuration diyoruz ve baseurl'i okuyoruz.
+    opt.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
 });
 
 

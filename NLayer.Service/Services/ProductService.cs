@@ -19,7 +19,8 @@ namespace NLayer.Service.Services
         }
 
         // Aşağıdaki değişkliği alıp productservice de ekliyoruz.
-        public async Task<List<ProductWithCategoryDto>> GetProductsWithCategory()
+        // Burda task list dönmüş ama burda CustomReponseDto dönmesi lazım.
+        public async Task<CustomResponseDto<List<ProductWithCategoryDto>>> GetProductsWithCategory()
         {
             // Yanlız bu method geriye bir list product dönüyor bizim dönüş tipimiz bizden dto bekliyor elimizde zaten mapper var biz burda dönüştürme işlemini başarılı bir şekilde yapabiliriz.Hatta biz burda bir tık daha ilerisi olan custom response dönebiliriz.Madem api'miz bizden customresponse bekliyor. Customresponse'ı direk ProductService de oluşturabiliriz sürekli yazmamak için ve best practices olması için.IProductService'imiz bize list dönüyordu burda sadece list değil biz orda direk customresponse'nin içerisinde döneceğiz.
             // Aşağıda tam olarak api'nin istemiş olduğu data'yı döndük.Çünkü bussines kodu service katmanında yazarız.Yani bir try catch kullanacaksak burda yazarız.Tüm bussiness service katmanında dönecek.E o zaman direk apinin istemiş olduğu datayı döneriz.
@@ -28,8 +29,8 @@ namespace NLayer.Service.Services
             var products = await _productRepository.GetProductsWithCategory();
             var productsDto = _mapper.Map<List<ProductWithCategoryDto>>(products);
             // Artık aşağıdaki kod satırını da dönememize gerek yok.
-            //return CustomResponseDto<List<ProductWithCategoryDto>>.Success(200, productsDto);
-            return productsDto;
+            return CustomResponseDto<List<ProductWithCategoryDto>>.Success(200, productsDto);
+            //return productsDto;
         }
     }
 }

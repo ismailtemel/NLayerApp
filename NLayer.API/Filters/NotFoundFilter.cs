@@ -27,7 +27,7 @@ namespace NLayer.API.Filters
             var idValue = context.ActionArguments.Values.FirstOrDefault();
 
             // Yukarıdaki işlemleri yaptıktan sonra şimdi null mı yokmu onu kontrol ederiz.
-            if (idValue==null)
+            if (idValue == null)
             {
                 // Eğer id nullsa yoluna devam et deriz.Yani demekki bana bir id gelmiyorsa demekki biz bu id'ye sahip birşeyle karşılaştırmamıza gerek yok.O zaman diyoruz ki biz burda await ile beraber next sınıfının invoke methodunu çağıracağız.Yani yoluna devam et diyoruz.Döngünün içinden çıkılmasına gerek olmadığı için return'u aşağıdaki kod satırının altına yazarız ve döneriz.
                 await next.Invoke();
@@ -38,7 +38,7 @@ namespace NLayer.API.Filters
             var id = (int)idValue;
 
             // AnyEntity ile entity varmı yokmu kontrol ederiz.await ile beraber bizim kontrol edebilmemiz için bir servis katmanına ihtiyacımız var o zaman bu classın en üstüne service'i ekleriz. Ardından aşağıdaki gibi id'nin olup olmadığını kontrol ederiz.Eğer ihtiyacımız olursa repo üzerinden de gidebiliriz.Biz şimdi id üzerinden gidiyoruz.Id varmı yokmu kontrol eder.Aşağıda getbyid yerine anyasync de kullanabiliriz fakat bu sefer id ye ulaşamıyoruz.Bunun çözümü için yukarıda class olarak belirttiğimiz yeri core katmanında bulunan kendi yazdığımız baseentity ile ulaşabiliriz.Eğer aşağıdaki koşul sağlanıyorsa yoluna devam eder ama else ise 
-            var anyEntity = await _service.AnyAsync(x=>x.Id==id);
+            var anyEntity = await _service.AnyAsync(x => x.Id == id);
 
             // Eğer entity varsa 
             if (anyEntity)
@@ -46,8 +46,8 @@ namespace NLayer.API.Filters
                 await next.Invoke();
                 return;
             }
-                                                                                                   //Burda dinamik olarak T nin                                                                        name'ini aldık.Arkasından
-                                                                                                   //id'sini yazdırdık.
+            //Burda dinamik olarak T nin                                                                        name'ini aldık.Arkasından
+            //id'sini yazdırdık.
             // Burda da direk olarak dönmüş olduk.Artık result'ı yazdığımız zaman artık devam etmeyecek result oluşacak.
             context.Result = new NotFoundObjectResult(CustomResponseDto<NoContentDto>.Fail(404, $"{typeof(T).Name}({id}) not found"));
         }

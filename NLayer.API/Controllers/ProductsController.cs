@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NLayer.API.Filter;
 using NLayer.API.Filters;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
@@ -9,7 +8,7 @@ using NLayer.Core.Services;
 namespace NLayer.API.Controllers
 {
     // Aşağıda controller seviyesine kadar gelmiş action ifadesini kullanmamış eğer ki action olsaydı aşağıda yazdığımız methodların ismini endpointlere istek yaparken mutlaka yazmamız gerekirdi.Ama action olmadığından dolayı bizim frameworkümüz istek yaparken methodun tipine göre eşleyecek eğer bir get isteği yaparsak aşağıda çalıştırmak istediğimiz methdolardan biri gelir. Ama nasıl bir get isteği yaparsak örneği ilk methodun üsütnde yazıyor.
-    
+
     public class ProductsController : CustomBaseController
     {
         // Controllerlar sadece servisleri bilir. Constructorlarında kesinlikle repoyu referans almazlar.
@@ -33,7 +32,9 @@ namespace NLayer.API.Controllers
         public async Task<IActionResult> GetProductsWithCategory()
         {
             // Amacımız controllerlar içerisinde action methodlarda minimum kod barındırmak.Tek satır kodla beraber create action result'ın istemiş olduğu datayı döndük.
-            return CreateActionResult(await _service.GetProductWithCategory());
+            // Önceki mvc projemizde dto dönmesini istemediğimiz için değiştirmiştik tekrar burayı eski haline getirmemiz gerekiyor.
+            // Bizim product için 2 adet servicemiz vardı. Biri cach tarafındakiydi cachle de çalıştığımız için.Diğeri ise normal servicemiz vardı onun da ismini en son ProductService olarak değiştirmiştik eski adı ProductServiceWithNoCaching.Burda cach'i kullanmayacağız direk ProductServiceWithNoCaching kullanacağız.
+            return CreateActionResult(await _service.GetProductsWithCategory());
         }
 
         //GET api/products
@@ -66,8 +67,8 @@ namespace NLayer.API.Controllers
 
             //if (products==null)
             //{
-                // Bir data bulunamadığı zaman geriye genellikle 404 notfound döneriz.
-                // Burda ise null yerine gelmesini istediğimiz sonucu yazdık.Bu if bloklarını burda yazdık fakat buna her bloğun içinde ihtiyacımız olabilir.Bu da controller içinde ciddi bir kirliliğe sebep olur.
+            // Bir data bulunamadığı zaman geriye genellikle 404 notfound döneriz.
+            // Burda ise null yerine gelmesini istediğimiz sonucu yazdık.Bu if bloklarını burda yazdık fakat buna her bloğun içinde ihtiyacımız olabilir.Bu da controller içinde ciddi bir kirliliğe sebep olur.
             //    return CreateActionResult(CustomResponseDto<ProductDto>.Fail(400, "Bu id'ye sahip ürün bulunamadı"));
             //}
 
@@ -104,7 +105,7 @@ namespace NLayer.API.Controllers
             //var productsDto = _mapper.Map<ProductDto>(products);
             // Burda da geriye birşey dönememize gerek yok
             return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
-            
+
         }
     }
 }

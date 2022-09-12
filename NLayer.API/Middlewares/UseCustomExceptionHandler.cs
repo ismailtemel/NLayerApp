@@ -30,7 +30,7 @@ namespace NLayer.API.Middlewares
                     {
                         // Eğer bu hatanın tipi exception eğer clientside bir exception ise geriye 400 döner yani status coda 400 değeri ata.Eğer bunun dışında birşey ise 
                         ClientSideException => 400,
-                        NotFoundException=>404,
+                        NotFoundException => 404,
                         // Eğer biz 500 hatası alıyorsak büyük ihtimal ile db'ye bağlanmak ile ilgili bir hata olabilir ve o hatayı clientlara dönmek çok uygun değil orda bir hata meydana geldi şeklinde genel bir hatamızı dönememiz uygun olacaktır.Bu yazdıklarım 500 durumu için geçerlidir.Çünkü bir db hatası aldığımızda bunu clientlara dönememizin bir mantığı yoktur.Orda o hatayı log'layıp burda serilog, nlog gibi kütüphaneler bütün exceptionları loglar. Eğer 500 ise geriye aşağıdaki statusCode kısmından sonra bir if bloğu yazıp kendimize ortak bir hata mesajı döneriz.Mesela işlem yapılırken bir hata meyda geldi gibi hatalar dönersek client bu hatanın server'da kaynaklı olduğunu anlar ve saçma sapan client'a da hata dönememiş oluruz.Ama mutlaka bu exceptionları loglamalıyız. 
                         _ => 500
                     };

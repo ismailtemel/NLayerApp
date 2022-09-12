@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using NLayer.Caching;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
@@ -39,14 +38,15 @@ namespace NLayer.API.Modules
             // InstancePerDependency bu ise bizim transient'e karşılık geliyor. Aynı işi yapıyorlar ama methodları farklı.
             // Scope, bir request başlayıp bitene kadar aynı instanceyi kullansın.Transient ise herhangi bir classın constructor'unda o interface nerde geçildiyse her seferinde yeni bir instance oluşturuyordu.
             // Aşağıda demek istiyoruz ki classlardan repository ile bitenleri al classlara karşılık gelen yine sonu repository ile biten interfaceleri al diyoruz.Aynısını service için de yaparız.
-            builder.RegisterAssemblyTypes(apiAssembly, repoAssembly, serviceAssembly).Where(x=>x.Name.EndsWith("Respository")).AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterAssemblyTypes(apiAssembly, repoAssembly, serviceAssembly).Where(x => x.Name.EndsWith("Respository")).AsImplementedInterfaces().InstancePerLifetimeScope();
 
             // Aşağıda service eklerekn productservice'i de ekliyordu fakat artık productservice'i eklememesi lazım onun yerine productservicewithccaching'i eklemesi gerekiyor.Artık burda manuel bir ekleme yapmamız gerekiyor.
             // ProductService eklememesi için service katmanındaki productservice classının adını değiştirmemiz gerekiyor. Çünkü ekleme yaparken son ekine bakıyor.
             builder.RegisterAssemblyTypes(apiAssembly, repoAssembly, serviceAssembly).Where(x => x.Name.EndsWith("Service")).AsImplementedInterfaces().InstancePerLifetimeScope();
 
             // Aşağıdaki işlemde manuel olarak cach class'ını çağırırız.Biz productserivcewithcaching'i alabilmek için api olarak referans vermemiz gerekiyor.Caching katmanı serivce katmanını içerdiği için biz apiye direk cachingden referans verebiliriz.ProductControllerda bir değişiklik yapmayız.Çünkü orda bir soyutlanma vardır.Orası zaten direk IProductService'i kullanıyor.Var olan kodu bozmadan yeni bir feature ekledik yeni bir class oluşturarak.
-            builder.RegisterType<ProductServiceWithCaching>().As<IProductService>();
+            // Aşağıda yorum satırına aldığımız yeri artık okumayacak direk db den okuyacak.Cach örneğini zaten yaptık.
+            //builder.RegisterType<ProductServiceWithCaching>().As<IProductService>();
 
 
 

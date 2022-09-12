@@ -71,7 +71,7 @@ namespace NLayer.Repository
                             {
                                 // Burdaki createddate'i update yaparken db'ye yansıtmamamız lazım yani createddate'i değiştirmemesi lazım o zaman diyoruz ki burda 
                                 // Yukarıdaki entity referancenin propertylerine git ve createddate'inin ismodified'ını false yap diyoruz.Bu sayede biz update yaparken createddate'e dokunmadan geçeriz.Burda entity framework'e CreatedDate alanına dokunma diyoruz.CreatedDate alanı neyse db de aynı şekilde kalsın diyoruz.Modified'ını false set ettik.
-                                Entry(entityReference).Property(x=>x.CreatedDate).IsModified = false;
+                                Entry(entityReference).Property(x => x.CreatedDate).IsModified = false;
                                 entityReference.UpdatedDate = DateTime.Now;
                                 break;
                             }

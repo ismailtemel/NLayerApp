@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NLayer.Core.DTOs;
 
 namespace NLayer.API.Controllers
@@ -26,7 +25,7 @@ namespace NLayer.API.Controllers
             // Aşağıdaki kod şu anlama gelir. Eğer statuscode 200 ise geriye 200 dönmüş olacağız eğer burda bize status kod 404 geliyorsa 404 döneceğiz 
             return new ObjectResult(response)
             {
-                StatusCode=response.StatusCode
+                StatusCode = response.StatusCode
             };
         }
     }
