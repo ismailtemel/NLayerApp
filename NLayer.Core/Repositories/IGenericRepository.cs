@@ -6,7 +6,7 @@ namespace NLayer.Core.Repositories
     {
         Task<T> GetByIdAsync(int id);
 
-        // Aşağıda geriye direk IEnumarable dönmememizin sebebi datayı aldıktan sonra ToList döndüğümüz anda veritabanına sorguyu atar IQueryable da dönen şeylerde direk veritabanına sorgu atılmaz bunlar memory de bizim yazmış olduğumuz lamda ifadelerini tek seferde veritabanına gönderir tabi ToList ve ToListAsync gibi methodlar çağırıldıktan sonra.
+        // Aşağıda geriye direk IEnumarable dönmememizin sebebi datayı aldıktan sonra ToList döndüğümüz anda veritabanına sorguyu atar IQueryable da dönen şeylerde direk veritabanına sorgu atılmaz bunlar memory de bizim yazmış olduğumuz lamb da ifadelerini tek seferde veritabanına gönderir. Tabi ToList ve ToListAsync gibi methodlar çağırıldıktan sonra.
         // productRepository.GetAll(x=>x.id>5).Tolist(); 
         IQueryable<T> GetAll();
 

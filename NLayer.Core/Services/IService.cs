@@ -5,7 +5,7 @@ namespace NLayer.Core.Services
     {
         Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync(); // GetAll da expression ifadesini kaldırdık çünkü zaten aynı ifade where de var.
-        //Aşağıdaki methodu async belirlemedik çünkü biz geriye IQueryable döneceğiz bunun veritabanına yansımasını bu serivisi çağıran kodda ToList veya ToListAsync çağırdığımız zaman veritabanına yansıması gerçekleşecek
+        //Aşağıdaki methodu async belirlemedik çünkü biz geriye IQueryable döneceğiz bunun veritabanına yansımasını bu serivisi çağıran kodda ToList veya ToListAsync yazdığımız zaman veritabanına yansıması gerçekleşir.
         IQueryable<T> Where(Expression<Func<T, bool>> expression);
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
         Task<T> AddAsync(T entity); // Bu geriye sadece task dönerken artık kendi tiplerini dönüyor.
