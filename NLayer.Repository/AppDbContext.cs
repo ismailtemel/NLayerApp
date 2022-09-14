@@ -6,10 +6,10 @@ namespace NLayer.Repository
 {
     public class AppDbContext : DbContext
     {
-        // Constructorun paramtre olarak options almasının nedeni çünkü bu options ile beraber veri tabanı yolunu startup dosyasından vereceğiz yani startup dosyasından veritabanı yolunu verebilmek için mutlaka bir dbcontext options alan bir constructor oluşturuyoruz peki ne için options AppDbContext için options oluştururuz.Arkasından bunu base'deki options'a göndeririz.
+        // Constructorun paramtre olarak options almasının nedeni çünkü bu options ile beraber veri tabanı yolunu program.cs dosyasından vereceğiz yani program.cs dosyasından veritabanı yolunu verebilmek için mutlaka bir dbcontext options alan bir constructor oluşturuyoruz peki ne için options AppDbContext için options oluştururuz.Arkasından bunu base'deki options'a göndeririz.
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            // Yani demek istediğimiz yeni bir productfeature eklemek istediğimizde mutlaka ya var olan product'a bir feature ekleyebiliriz ya da sıfırdan product ekler gibi aynı zamanda featuresini de ekleyebiliriz.Sonuş olarak dbset olarak eklemek istemeyim product üzerinden feature kelmek istersek aşağıdaki gibi yapabiliriz bu tamamen bize kalmıştır.Öğrenme aşamasında olduğumuz için şuanda dbset üzerinden ilerleyeceğiz fakat best practices açısından product üzerinden productfeature eklemek daha doğrudur.
+            // Yani demek istediğimiz yeni bir productfeature eklemek istediğimizde mutlaka ya var olan product'a bir feature ekleyebiliriz ya da sıfırdan product ekler gibi aynı zamanda featuresini de ekleyebiliriz.Sonuç olarak dbset olarak eklemek istemeyim product üzerinden feature eklemek istersek aşağıdaki gibi yapabiliriz bu tamamen bize kalmıştır.Öğrenme aşamasında olduğumuz için şuanda dbset üzerinden ilerleyeceğiz fakat best practices açısından product üzerinden productfeature eklemek daha doğrudur.
             //var p = new Product() { ProductFeature = new ProductFeature() { } };
         }
         // Burada her bir entity'mize karşılık olarak bir DbSet oluşturuyoruz.
@@ -20,7 +20,7 @@ namespace NLayer.Repository
 
         public override int SaveChanges()
         {
-            // İki tane overload olduğu için bazen de savechangeyi çağırabileceğimiz için bu yüzden savechangeyi de almamız lazım.
+            // İki tane overload olduğundan bazen de savechangeyi çağırabileceğimiz için bu yüzden savechangeyi de almamız lazım.
             foreach (var item in ChangeTracker.Entries())
             {
                 // Entity den gelen eğer aşağıdaki is basenetity ise bizim tüm entitylerimiz baseentityden miras alıyordu arkasından bu bir referanstır diyoruz.
