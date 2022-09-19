@@ -17,8 +17,8 @@ namespace NLayer.Repository.Seed
                 Stock=20,
                 //Her product eklediğimizde createdDate'i vermek zorunda değiliz merkezi bir yerden çağırabiliriz.Bunu çağırmak için DbContext'e bir interceptor yazarız.Product veya herhangi bir entity kaydedilmeden önce CreatedDate'i set'leriz.
                 CreatedDate=DateTime.Now
-                // BaseEntity'deki update veri tabanına ilk kayıt eklendiği esnada null olmalı.
-                // Update Date 'i de create date gibi merkezi bir yerden her hangi bir entity güncellenmeden önce updateed date'ini set edeceğiz bunu da bir dbcontext nesnemize yani bizim AppDbContext bir interceptor yazacağız araya girici bir method yazacağız aslında yapmak istediğimiz savechange methodunu ovveride etmek.
+                // BaseEntity'deki updatedate veri tabanına ilk kayıt eklendiği esnada null olmalı.
+                // UpdateDate'i de createdate gibi merkezi bir yerden her hangi bir entity güncellenmeden önce update date'ini set edeceğiz bunu da bir dbcontext nesnemize yani bizim AppDbContext'e interceptor yani araya girici bir method yazacağız aslında yapmak istediğimiz savechange methodunu ovveride(yeniden şekillendirmek) etmek.
             },
             new Product
             {
