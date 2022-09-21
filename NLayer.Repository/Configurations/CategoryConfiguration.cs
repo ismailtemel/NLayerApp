@@ -18,7 +18,7 @@ namespace NLayer.Repository.Configurations
             // Eğer değiştirmek istemessek default olarak dbsetteki ismini alır.
             builder.ToTable("Categories");
 
-            
+
         }
     }
 }

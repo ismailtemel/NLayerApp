@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NLayer.Core.Models;
 using NLayer.Core.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NLayer.Repository.Repositories
 {
@@ -23,7 +18,7 @@ namespace NLayer.Repository.Repositories
             // Efcore da lazy loading de vardır.Eğer product'a bağlı kategoriyi de ihtiyaç olduğunda daha sonra çekersek bu da lazy loading olur.
             // İlk product'ları çektiğimiz anda kategoriyi de çekersek o eager loading olur.
             // 
-            return await _context.Products.Include(x=>x.Category).ToListAsync();
+            return await _context.Products.Include(x => x.Category).ToListAsync();
         }
     }
 }

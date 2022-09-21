@@ -26,7 +26,7 @@ namespace NLayer.Service.Services
             var categoryDto = _mapper.Map<CategoryWithProductsDto>(category);
 
             // Return'un yanına eğer new koyarsak success methodumuz gelmez.
-            return  CustomResponseDto<CategoryWithProductsDto>.Success(200,categoryDto);
+            return CustomResponseDto<CategoryWithProductsDto>.Success(200, categoryDto);
         }
     }
 }
