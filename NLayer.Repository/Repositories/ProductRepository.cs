@@ -17,7 +17,6 @@ namespace NLayer.Repository.Repositories
             // Biz burda include methoduyla birlikte aslında burda eager loading yaptık yani daha datayı çekerken kategorilerin de alınmasını istedik.
             // Efcore da lazy loading de vardır.Eğer product'a bağlı kategoriyi de ihtiyaç olduğunda daha sonra çekersek bu da lazy loading olur.
             // İlk product'ları çektiğimiz anda kategoriyi de çekersek o eager loading olur.
-            // 
             return await _context.Products.Include(x => x.Category).ToListAsync();
         }
     }
