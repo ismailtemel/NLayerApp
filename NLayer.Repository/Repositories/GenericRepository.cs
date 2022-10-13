@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace NLayer.Repository.Repositories
 {
-    // Aşağıda T'yi class olarak belirtmessek  hata alırız aşağıda T ile beraber yazacağım ifade referans tipli olmalıdır.Biz aşağıda generic T ifadesine class vermessek biz buraya integer da gönderebiliriz ama efcore burada classlarla çalıştığı için açık açık belirtiriz.Olurda buraya başka birşey gönderirsek compile zamanında hata alırız.
+    // Aşağıda T'yi class olarak belirtmessek hata alırız aşağıda T ile beraber yazacağım ifade referans tipli olmalıdır.Biz aşağıda generic T ifadesine class vermessek biz buraya integer da gönderebiliriz ama efcore burada classlarla çalıştığı için açık açık belirtiriz.Olurda buraya başka birşey gönderirsek compile zamanında hata alırız.
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         // Aşağıda private yerine protected yapmamızın sebebi ilerde bazen özellikle product sınıfına ait aşağıdaki temel crud operasyonları dışında extra ayrı methodlara ihtiyacımız olursa diye private yerine protected yaparız.Protected erişim belirleyicisine miras aldığımız yerde erişebiliriz.
@@ -19,7 +19,7 @@ namespace NLayer.Repository.Repositories
         }
 
         // Readonly keywordunu kullanıdğımızda bu değişkenlere ya o esnada değer atarız ya da constructor da değer atayabiliriz.Bu iki yer dışında değer atamaya kalkarsak compile zamanı hatası alırız.Biz mutlaka constructor da değer atayacağımız için daha sonra da kesinlikle set edilmemesi için readonly olarak belirtiyoruz.Yani değişkenlerimize farklı dbcontext'ler set edilmesin diye direk constructor da oluştururuz.
-        // Biz genellikle constructora geçeceğimiz zaman değişkenlerimzi varsa bunları mutlaka readonyl yapıyoruz ki kazara başka şeyler set etmeyelim.
+        // Biz genellikle constructora geçeceğimiz zaman değişkenlerimiz varsa bunları mutlaka readonly yapıyoruz ki kazara başka şeyler set etmeyelim.
         private readonly DbSet<T> _dbSet;
         public async Task AddAsync(T entity)
         {
@@ -30,7 +30,7 @@ namespace NLayer.Repository.Repositories
 
         public async Task AddRangeAsync(IEnumerable<T> entities)
         {
-            // AddRange'in geriye birşey dönemsine gerek yok efcore şuan bunları memory'e kaydetti
+            // AddRange'in geriye birşey dönemsine gerek yok çünkü efcore şuan bunları memory'e kaydetti.
             await _dbSet.AddRangeAsync(entities);
         }
 

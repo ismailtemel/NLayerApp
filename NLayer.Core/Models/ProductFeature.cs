@@ -2,7 +2,7 @@
 {
     public class ProductFeature
     {
-        // ProductFeature product'a bağlı olduğu için base entity den referans almamıza gerek kalmaz.
+        // ProductFeature, product'a bağlı olduğu için base entity den referans almamıza gerek kalmaz.
         public int Id { get; set; }
         public string Color { get; set; }
         public int Height { get; set; }

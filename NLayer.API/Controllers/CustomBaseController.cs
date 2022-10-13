@@ -7,14 +7,18 @@ namespace NLayer.API.Controllers
     [ApiController]
     public class CustomBaseController : ControllerBase
     {
-        // Aşağıdaki kod bir endpoint değildir.Bunu belirtmek için NoAction attribute'ünü ekleriz.Bunu eklemessek swagger bunu bir endpoint gibi algılar ve endpoint olarak algıladığında get veya post'u olmadığı için hata fırlatır.NonAction,bu bir endpoint değil kendi içimde kullanıyorum demektir.
+        // Aşağıdaki kod bir endpoint değildir.Bunu belirtmek için NoAction attribute'ünü ekleriz.
+        // Bunu eklemessek swagger bunu bir endpoint gibi algılar ve endpoint olarak algıladığında get veya post'u olmadığı için hata fırlatır.
+        // NonAction'ın anlamı bu bir endpoint değil kendi içimde kullanıyorum demektir.
         // Burda bir data dönebilir diye T aldı.Parantez içerisinde ise bizim CustomResponseDto'muzu alır
         [NonAction]
         public IActionResult CreateActionResult<T>(CustomResponseDto<T> response)
         {
             if (response.StatusCode == 204) // 204 durum kodu NoContent demektir.
             {
-                // Burda objectresult dönememizin sebebi controller içinde tekrar tekrar ok ,badrequest gibi farklı farklı dönememize gerek kalmaz.Objectresult döneriz döneceğimiz data yı null yaparız.İçerisindeki status kodu ise responseden gelen status kod olsun.Bu sayede her seferinde tek tek dönememize gerek yok.Bu methodu çağırdığımızda response'ın status kodu neyse onu dönecek.
+                // Burda objectresult dönememizin sebebi controller içinde tekrar tekrar ok ,badrequest gibi farklı farklı dönememize gerek kalmaz.
+                // Objectresult ile döneceğimiz data'yı null yaparız.İçerisindeki status kodu ise responseden gelen status kod olsun.
+                // Bu sayede her seferinde tek tek dönememize gerek yok.Bu methodu çağırdığımızda response'ın status kodu neyse onu dönecek.
                 return new ObjectResult(null)
                 {
                     //Burdaki statuscode responsedan gelen status koddur.

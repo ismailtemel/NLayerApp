@@ -25,7 +25,7 @@ namespace NLayer.Service.Services
         {
             // Biz burda savechange dediğimizde efcore sqlserver tarafında ilgili satırlar için verilen id'yi direk olarak 
             // aşağıda parantez de yazmış olduğumuz entitynin id property'sine atar.  
-            // Yukarıda bir entity de döneriz nedeni yukadıdaki add metodumuz geriye sadece task dönüyordu. Sonuçta bir data kaydettiğimizde onun id'sinide kulllanmak isteyebiliriz bu yüzden Task<T> bu şekilde yaparız.
+            // Yukarıda bir entity döneriz nedeni yukadıdaki add metodumuz geriye sadece task dönüyordu. Sonuçta bir data kaydettiğimizde onun id'sinide kulllanmak isteyebiliriz bu yüzden Task<T> bu şekilde yaparız.
             // Yani biz burda geriye eklenen entitiy'nin dönemsini sağladık.
             await _repository.AddAsync(entity);
             await _unitOfWork.CommitAsync();
@@ -56,14 +56,14 @@ namespace NLayer.Service.Services
 
         public async Task<T> GetByIdAsync(int id)
         {
-            // Başlangıçta service ve repo katmanları birbirine benzer görünüyor fakat ilerledikçe olayın şekli değişmeye başlıyor.İlk başta GetAllAsync de dönüş tipleri değişti. Şimdi if ile birlikte bir bussines kodu ekliyoruz bu aradki fark program büyüdükçe değişmeye devam edecek.Bazen servis katmanından bazı api'lere istek yapmamız gerekecek vs.
+            // Başlangıçta service ve repo katmanları birbirine benzer görünüyor fakat ilerledikçe olayın şekli değişmeye başlıyor.İlk başta GetAllAsync de dönüş tipleri değişti. Şimdi if ile birlikte bir bussines kodu ekliyoruz bu aradaki fark program büyüdükçe değişmeye devam edecek.Bazen servis katmanından bazı api'lere istek yapmamız gerekecek vs.
             // Aşağıda return demek yerine var hasProduct yaparız nedeni burası bizim bussines kodları yazdığımız yer.
             var hasProduct = await _repository.GetByIdAsync(id);
 
             // Eğer bir hata yoksa aşağıdaki if bloğuna girmez.Direk aşağıdaki return ile yoluna devam eder.
             if (hasProduct == null)
             {
-                //ClientSideException bir mesaj alıyordu parantezlere dinamik olarak bu class T alıyordu.Biz product'mı geliyor stock mu geliyor hangi entitynin geldiğini bilmiyoruz.Bu yüzden mantıklı bir hata dönememiz lazım.
+                // ClientSideException bir mesaj alıyordu parantezlere dinamik olarak bu class T alıyordu.Biz product'mı geliyor stock mu geliyor hangi entitynin geldiğini bilmiyoruz.Bu    yüzden mantıklı bir hata dönememiz lazım.
                 // Aşağıdaki gibi NotFound dönersek artık 404 durum kodunu alırız.
                 // Çalıştırdığımızda daha şık durmasını istiyorsak eğer aşağıdaki gibi parantez içinde gelen id'yi de yazdırabiliriz.Süslü parantezleri dinamik çalışması için koyarız.
                 throw new NotFoundException($"{typeof(T).Name}({id}) not found");
@@ -91,7 +91,7 @@ namespace NLayer.Service.Services
 
         public IQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
-            // Where geriye tolist değil IQueryable dönüyor bu yüzden burada asenkron bir durum yok çünkü tolist veya tolistasync bu where methodunu çağırdığımız yerde yani api tarafında kullanacağız
+            // Where geriye tolist değil IQueryable dönüyor bu yüzden burada asenkron bir durum yok çünkü tolist veya tolistasync bu where methodunu çağırdığımız yerde yani api tarafında kullanacağız.
             return _repository.Where(expression);
         }
     }

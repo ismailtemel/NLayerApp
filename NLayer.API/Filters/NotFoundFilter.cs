@@ -6,7 +6,8 @@ using NLayer.Core.Services;
 
 namespace NLayer.API.Filters
 {
-    // NotFoundFilter'ın sadece product için olmasını istemediğimiz için tüm entityler için olabilir.Çünkü tüm entitylerde bir id var. O zaman aşağıda NotFoundFilter'ın yanına dinamik bir T alırız ve uygulanacağı tipi aşağıdaki gibi class yaparız.
+    // NotFoundFilter'ın sadece product için olmasını istemediğimiz için tüm entityler için olabilir.Çünkü tüm entitylerde bir id var.
+    // O zaman aşağıda NotFoundFilter'ın yanına dinamik bir T alırız ve uygulanacağı tipi aşağıdaki gibi class yaparız.
     // Eğer bir filter'ımız constructor'unda herhangi bir servisi veya herhangi bir class'ı , bir interface'i deal olarak geçiyorsa bizim bunu program.cs tarafına da eklememiz gerekiyor.
     public class NotFoundFilter<T> : IAsyncActionFilter where T : BaseEntity
     {
@@ -18,7 +19,7 @@ namespace NLayer.API.Filters
         }
 
 
-        // Aşağıdaki async bir methoddur.Aşağıdaki paramtrelerden olan next'in gelmesinin amacı herhangi bir filter'a takılmayacaksak next diyip bu request'i yoluna devam ettirmek için.
+        // Aşağıdaki async bir methoddur.Aşağıdaki parametrelerden olan next'in gelmesinin amacı herhangi bir filter'a takılmayacaksak next diyip bu request'i yoluna devam ettirmek için.
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             //ProductController'daki GetById methodunda daha GetById'ye gelmeden bizim yazacağımız filter GetById'de parametre olarak bulunan (int id) yandaki id'ye sahip mi değil mi kontrol edecek.O zaman bizim ilgili endpointteki id'yi yakalamamız lazım.Id'yi aşağıdaki gibi yakalarız.
@@ -26,10 +27,10 @@ namespace NLayer.API.Filters
             // Context ile actionarguments property'sine ulaştık ardından bu yazdığımız property üzerinden values'larına git diyoruz burdan da bize ilk olanı al diyoruz.Yani paramtredeki id'yi.
             var idValue = context.ActionArguments.Values.FirstOrDefault();
 
-            // Yukarıdaki işlemleri yaptıktan sonra şimdi null mı yokmu onu kontrol ederiz.
+            // Yukarıdaki işlemleri yaptıktan sonra şimdi null mı yoksa değil mi onu kontrol ederiz.
             if (idValue == null)
             {
-                // Eğer id nullsa yoluna devam et deriz.Yani demekki bana bir id gelmiyorsa demekki biz bu id'ye sahip birşeyle karşılaştırmamıza gerek yok.O zaman diyoruz ki biz burda await ile beraber next sınıfının invoke methodunu çağıracağız.Yani yoluna devam et diyoruz.Döngünün içinden çıkılmasına gerek olmadığı için return'u aşağıdaki kod satırının altına yazarız ve döneriz.
+                // Eğer id nullsa yoluna devam et deriz.Yani bana bir id gelmiyorsa demekki biz bu id'ye sahip birşeyle karşılaştırmamıza gerek yok.O zaman diyoruz ki biz burda await ile beraber next sınıfının invoke methodunu çağıracağız.Yani yoluna devam et diyoruz.Döngünün içinden çıkılmasına gerek olmadığı için return'u aşağıdaki kod satırının altına yazarız ve döneriz.
                 await next.Invoke();
                 return;
             }
@@ -46,9 +47,8 @@ namespace NLayer.API.Filters
                 await next.Invoke();
                 return;
             }
-            //Burda dinamik olarak T nin                                                                        name'ini aldık.Arkasından
-            //id'sini yazdırdık.
-            // Burda da direk olarak dönmüş olduk.Artık result'ı yazdığımız zaman artık devam etmeyecek result oluşacak.
+            // Burda dinamik olarak T nin name'ini aldık.Arkasından id'sini yazdırdık.
+            // Burda da direk olarak dönmüş olduk.Artık result'ı yazdığımız zaman devam etmeyecek result oluşacak.
             context.Result = new NotFoundObjectResult(CustomResponseDto<NoContentDto>.Fail(404, $"{typeof(T).Name}({id}) not found"));
         }
     }

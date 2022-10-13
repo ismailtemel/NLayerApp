@@ -26,7 +26,7 @@ namespace NLayer.API.Modules
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
 
-            // Autofac assemblyleri tarar ve istediğimiz tüm interface ve bu interface gelen classları dinamik olarak ekleyecek.
+            // Autofac assemblyleri tarar ve istediğimiz tüm interface ve bu interface gelen classları dinamik olarak ekler.
             // Aşağıda ilk önce apiAssembly'yi alırız. Yani çalışmış olduğumuz assembly zaten bu class'ın bulunmuş olduğu assembly api olduğu için üzerinde çalıştığın assembly'i al diyoruz.
             var apiAssembly = Assembly.GetExecutingAssembly();
 
@@ -41,7 +41,7 @@ namespace NLayer.API.Modules
             // Aşağıda demek istiyoruz ki classlardan repository ile bitenleri al classlara karşılık gelen yine sonu repository ile biten interfaceleri al diyoruz.Aynısını service için de yaparız.
             builder.RegisterAssemblyTypes(apiAssembly, repoAssembly, serviceAssembly).Where(x => x.Name.EndsWith("Respository")).AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            // Aşağıda service eklerekn productservice'i de ekliyordu fakat artık productservice'i eklememesi lazım onun yerine productservicewithccaching'i eklemesi gerekiyor.Artık burda manuel bir ekleme yapmamız gerekiyor.
+            // Aşağıda service eklerken productservice'i de ekliyordu fakat artık productservice'i eklememesi lazım onun yerine productservicewithccaching'i eklemesi gerekiyor.Artık burda manuel bir ekleme yapmamız lazım.
             // ProductService eklememesi için service katmanındaki productservice classının adını değiştirmemiz gerekiyor. Çünkü ekleme yaparken son ekine bakıyor.
             builder.RegisterAssemblyTypes(apiAssembly, repoAssembly, serviceAssembly).Where(x => x.Name.EndsWith("Service")).AsImplementedInterfaces().InstancePerLifetimeScope();
 

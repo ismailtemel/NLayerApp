@@ -14,7 +14,7 @@ namespace NLayer.API.Controllers
         }
 
         // api/categories/GetSingleCategoryByIdWithProducts/2
-        // Yukarıda yazdığım yolun sonundaki 2'yi almak için aşağıdaki koda categoryId'de veririz. Methoddaki paramtre adı neyse action'ın yanına da onu yazmalıyız. Nedeni framework'ün mapleyebilmesi.
+        // Yukarıda yazdığım yolun sonundaki 2'yi almak için aşağıdaki koda categoryId'yi de veririz. Methoddaki parametre adı neyse action'ın yanına da onu yazmalıyız. Nedeni framework'ün mapleyebilmesi.
         [HttpGet("[action]/{categoryId}")]
         public async Task<IActionResult> GetSingleCategoryByIdWithProducts(int categoryId)
         {

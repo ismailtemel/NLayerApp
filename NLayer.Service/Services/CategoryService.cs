@@ -20,7 +20,7 @@ namespace NLayer.Service.Services
 
         public async Task<CustomResponseDto<CategoryWithProductsDto>> GetSingleCategoryByIdWithProductsAsync(int categoryId)
         {
-            // Aşağıdaki kodun anlamı : Bize tek bir category gelecek bu bir entity olacak await ile beraber categoryReposiyoryden getsinglecategory dön ama aynı zamanda productları dön ve bana bir id ver diyor methodda paramtere olarak geçmiş olduğumuz id'yi verdik. Bunu aynı zamanda dto'ya dönüştürmemiz gerekiyor.
+            // Aşağıdaki kodun anlamı : Bize tek bir category gelecek bu bir entity olacak await ile beraber categoryRepositoryden getsinglecategory dön ama aynı zamanda productlarıda dön ve bana bir id ver diyor methoda paramtere olarak geçmiş olduğumuz id'yi verdik. Bunu aynı zamanda dto'ya dönüştürmemiz gerekiyor.
             var category = await _categoryRepository.GetSingleCategoryByIdWithProductsAsync(categoryId);
 
             var categoryDto = _mapper.Map<CategoryWithProductsDto>(category);
